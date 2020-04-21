@@ -1,0 +1,10 @@
+C:\Users\59565\source\repos\CompilingPrinciple\CompilingPrinciple\bin\Debug\CompilingPrinciple.exe.config
+C:\Users\59565\source\repos\CompilingPrinciple\CompilingPrinciple\bin\Debug\CompilingPrinciple.exe
+C:\Users\59565\source\repos\CompilingPrinciple\CompilingPrinciple\bin\Debug\CompilingPrinciple.pdb
+C:\Users\59565\source\repos\CompilingPrinciple\CompilingPrinciple\obj\Debug\CompilingPrinciple.csprojAssemblyReference.cache
+C:\Users\59565\source\repos\CompilingPrinciple\CompilingPrinciple\obj\Debug\CompilingPrinciple.Form1.resources
+C:\Users\59565\source\repos\CompilingPrinciple\CompilingPrinciple\obj\Debug\CompilingPrinciple.Properties.Resources.resources
+C:\Users\59565\source\repos\CompilingPrinciple\CompilingPrinciple\obj\Debug\CompilingPrinciple.csproj.GenerateResource.cache
+C:\Users\59565\source\repos\CompilingPrinciple\CompilingPrinciple\obj\Debug\CompilingPrinciple.csproj.CoreCompileInputs.cache
+C:\Users\59565\source\repos\CompilingPrinciple\CompilingPrinciple\obj\Debug\CompilingPrinciple.exe
+C:\Users\59565\source\repos\CompilingPrinciple\CompilingPrinciple\obj\Debug\CompilingPrinciple.pdb
