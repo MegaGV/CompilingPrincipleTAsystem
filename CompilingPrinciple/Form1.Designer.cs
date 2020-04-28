@@ -130,47 +130,48 @@
             this.Menu_File.Name = "Menu_File";
             this.Menu_File.Size = new System.Drawing.Size(53, 24);
             this.Menu_File.Text = "文件";
-            this.Menu_File.Click += new System.EventHandler(this.aToolStripMenuItem_Click);
             // 
             // Menu_File_Open
             // 
             this.Menu_File_Open.Name = "Menu_File_Open";
-            this.Menu_File_Open.Size = new System.Drawing.Size(224, 26);
+            this.Menu_File_Open.Size = new System.Drawing.Size(137, 26);
             this.Menu_File_Open.Text = "打开";
             this.Menu_File_Open.Click += new System.EventHandler(this.openFile);
             // 
             // Menu_File_Save
             // 
             this.Menu_File_Save.Name = "Menu_File_Save";
-            this.Menu_File_Save.Size = new System.Drawing.Size(224, 26);
+            this.Menu_File_Save.Size = new System.Drawing.Size(137, 26);
             this.Menu_File_Save.Text = "保存";
+            this.Menu_File_Save.Click += new System.EventHandler(this.saveFile);
             // 
             // Menu_File_Saveas
             // 
             this.Menu_File_Saveas.Name = "Menu_File_Saveas";
-            this.Menu_File_Saveas.Size = new System.Drawing.Size(224, 26);
+            this.Menu_File_Saveas.Size = new System.Drawing.Size(137, 26);
             this.Menu_File_Saveas.Text = "另存为";
+            this.Menu_File_Saveas.Click += new System.EventHandler(this.saveAs);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(221, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(134, 6);
             // 
             // Menu_File_Recent
             // 
             this.Menu_File_Recent.Name = "Menu_File_Recent";
-            this.Menu_File_Recent.Size = new System.Drawing.Size(224, 26);
+            this.Menu_File_Recent.Size = new System.Drawing.Size(137, 26);
             this.Menu_File_Recent.Text = "最近";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(221, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(134, 6);
             // 
             // Menu_File_Exit
             // 
             this.Menu_File_Exit.Name = "Menu_File_Exit";
-            this.Menu_File_Exit.Size = new System.Drawing.Size(224, 26);
+            this.Menu_File_Exit.Size = new System.Drawing.Size(137, 26);
             this.Menu_File_Exit.Text = "退出";
             // 
             // Menu_Edit
@@ -226,13 +227,14 @@
             // Menu_WordAnalyse_WA
             // 
             this.Menu_WordAnalyse_WA.Name = "Menu_WordAnalyse_WA";
-            this.Menu_WordAnalyse_WA.Size = new System.Drawing.Size(201, 26);
+            this.Menu_WordAnalyse_WA.Size = new System.Drawing.Size(224, 26);
             this.Menu_WordAnalyse_WA.Text = "词法分析器";
+            this.Menu_WordAnalyse_WA.Click += new System.EventHandler(this.WA);
             // 
             // Menu_WordAnalyse_NFA
             // 
             this.Menu_WordAnalyse_NFA.Name = "Menu_WordAnalyse_NFA";
-            this.Menu_WordAnalyse_NFA.Size = new System.Drawing.Size(201, 26);
+            this.Menu_WordAnalyse_NFA.Size = new System.Drawing.Size(224, 26);
             this.Menu_WordAnalyse_NFA.Text = "NFA_DFA_MFA";
             // 
             // Menu_SentenceAnalyse
@@ -300,14 +302,14 @@
             // Menu_Help_Help
             // 
             this.Menu_Help_Help.Name = "Menu_Help_Help";
-            this.Menu_Help_Help.Size = new System.Drawing.Size(224, 26);
+            this.Menu_Help_Help.Size = new System.Drawing.Size(187, 26);
             this.Menu_Help_Help.Text = "帮助";
             this.Menu_Help_Help.Click += new System.EventHandler(this.openHelp);
             // 
             // Menu_Help_About
             // 
             this.Menu_Help_About.Name = "Menu_Help_About";
-            this.Menu_Help_About.Size = new System.Drawing.Size(224, 26);
+            this.Menu_Help_About.Size = new System.Drawing.Size(187, 26);
             this.Menu_Help_About.Text = "关于compiler";
             // 
             // Tool
@@ -344,7 +346,7 @@
             this.Tool_Open.Name = "Tool_Open";
             this.Tool_Open.Size = new System.Drawing.Size(21, 24);
             this.Tool_Open.Text = "打开";
-            this.Tool_Open.Click += new System.EventHandler(this.toolStripButton1_Click);
+            this.Tool_Open.Click += new System.EventHandler(this.openFile);
             // 
             // Tool_Save
             // 
@@ -357,6 +359,7 @@
             this.Tool_Save.Name = "Tool_Save";
             this.Tool_Save.Size = new System.Drawing.Size(21, 24);
             this.Tool_Save.Text = "保存";
+            this.Tool_Save.Click += new System.EventHandler(this.saveFile);
             // 
             // toolStripSeparator4
             // 
@@ -415,6 +418,7 @@
             this.Tool_WA.Name = "Tool_WA";
             this.Tool_WA.Size = new System.Drawing.Size(21, 24);
             this.Tool_WA.Text = "词法分析器";
+            this.Tool_WA.Click += new System.EventHandler(this.WA);
             // 
             // Tool_Opt
             // 
