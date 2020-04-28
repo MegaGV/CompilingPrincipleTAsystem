@@ -14,7 +14,7 @@ namespace CompilingPrinciple
     public partial class Form1 : Form
     {
         private string path = "";
-        WordAnalyse wordAnalyse = new WordAnalyse();
+        WordAnalyzer wordAnalyse = new WordAnalyzer();
 
         public Form1()
         {
@@ -79,7 +79,7 @@ namespace CompilingPrinciple
 
         private void WA(object sender, EventArgs e)
         {
-            wordAnalyse.Analyse(this.richTextBox1.Text);
+            wordAnalyse.WordAnalyse(this.richTextBox1.Text);
             List<Token> tokens = wordAnalyse.getTokens();
             List<WrongToken> wrongtokens = wordAnalyse.getWrongTokens();
             StringBuilder sb = new StringBuilder();
