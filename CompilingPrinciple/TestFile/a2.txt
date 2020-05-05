@@ -1,0 +1,12 @@
+int main()
+{
+  //sad
+ int a;
+ /* good */
+  return 0;
+ /* how 
+long could this
+b/*/
+}
+/d
+/*

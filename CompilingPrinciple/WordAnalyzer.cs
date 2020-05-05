@@ -10,7 +10,7 @@ namespace CompilingPrinciple
     {
         private List<string> keywords;
         private List<string> operators;
-        private List<char> delimiters;
+        private List<string> delimiters;
 
         private List<Token> tokens;
         private List<WrongToken> wrongtokens;
@@ -33,13 +33,13 @@ namespace CompilingPrinciple
                 ">>", "<<", "<", ">", "<=", ">=", "==", "!=",
                 "+=", "-=", "*=", "/=", "%="
             };
-            char[] delimiterStr = {
-                '(', ')', '[', ']', '{', '}', ',', ';', '=', ' ', '\n'
+            string[] delimiterStr = {
+                "(", ")", "[", "]", "{", "}", ",", ";", "=", " ", "\n", "//", "/*", "*/"
             };
 
             keywords = new List<string>(keywordStr);
             operators = new List<string>(operatorStr);
-            delimiters = new List<char>(delimiterStr);
+            delimiters = new List<string>(delimiterStr);
             tokens = new List<Token>();
             wrongtokens = new List<WrongToken>();
     }
@@ -57,12 +57,59 @@ namespace CompilingPrinciple
             int line = 1;
             for (int i = 0; i < contents.Length; i++)
             {
+                //注释判断
+                if (i < contents.Length - 1 && contents[i] == '/')
+                {
+                    int j = i + 1;
+                    if (contents[j] == '/')
+                    {
+                        tokens.Add(new Token(TokenType.delimiter, "//", 400 + delimiters.IndexOf("//"), line));
+                        while (true)
+                        {
+                            j++;
+                            if (j == contents.Length)
+                                return;
+                            else if (contents[j] == '\n')
+                            {
+                                line++;
+                                j++;
+                                i = j;
+                                break;
+                            }
+                        }
+                    }
+                    else if (contents[j] == '*')
+                    {
+                        tokens.Add(new Token(TokenType.delimiter, "/*", 400 + delimiters.IndexOf("/*"), line));
+                        while (true)
+                        {
+                            j++;
+                            if (j == contents.Length)
+                            {
+                                wrongtokens.Add(new WrongToken("/*", line, "invalid comment '/*' no */ found"));
+                                tokens.RemoveAt(tokens.Count - 1);
+                                return;
+                            }
+                            else if (contents[j] == '\n')
+                                line++;
+                            else if (contents[j] == '*' && contents[j + 1] == '/')
+                            {
+                                tokens.Add(new Token(TokenType.delimiter, "*/", 400 + delimiters.IndexOf("*/"), line));
+                                j++;
+                                i = j;
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 //如果是界符
-                if (isDelimiter(contents[i])){
+                if (isDelimiter(contents[i])) 
+                {
                     if (contents[i] == '\n')//换行符不计入token表内，且递增行数
                         line++;
-                    else if(contents[i] != ' ')//界符空格不纳入token表内
-                        tokens.Add(new Token(TokenType.delimiter, contents[i].ToString(), 400 + delimiters.IndexOf(contents[i]), line));
+                    else if (contents[i] != ' ')//界符空格不纳入token表内
+                        tokens.Add(new Token(TokenType.delimiter, contents[i].ToString(), 400 + delimiters.IndexOf(contents[i].ToString()), line));
                 }
                 //如果是字母，进一步判断是否是合法token以及区分关键字还是标识符
                 else if (isLetter(contents[i]))
@@ -88,8 +135,7 @@ namespace CompilingPrinciple
                     if (error) //得到错误token，将错误token加入错误列表
                     {
                         sb.Append(contents[i]);
-                        System.Console.WriteLine("WARNING, invalid identifier " + sb.ToString() + " found");
-                        wrongtokens.Add(new WrongToken(sb.ToString(), line));
+                        wrongtokens.Add(new WrongToken(sb.ToString(), line, "invalid identifier " + sb.ToString() + " found"));
                     }
                     //如果是关键字
                     else if (isKeyword(sb.ToString()))
@@ -128,8 +174,7 @@ namespace CompilingPrinciple
                     if (error) //得到错误token，将错误token加入错误列表
                     {
                         sb.Append(contents[i]);
-                        System.Console.WriteLine("WARNING, invalid digit " + sb.ToString() + " found");
-                        wrongtokens.Add(new WrongToken(sb.ToString(), line));
+                        wrongtokens.Add(new WrongToken(sb.ToString(), line, "invalid digit " + sb.ToString() + " found"));
                     }
                     //得到正确digit token
                     else
@@ -154,8 +199,7 @@ namespace CompilingPrinciple
                         //得到不存在的运算符，加入错误列表
                         else
                         {
-                            System.Console.WriteLine("WARNING, invalid operator" + sb.ToString() + " found");
-                            wrongtokens.Add(new WrongToken(sb.ToString(), line));
+                            wrongtokens.Add(new WrongToken(sb.ToString(), line, "invalid operator " + sb.ToString() + " found"));
                         }
                     }
                     tokens.Add(new Token(TokenType.operation, sb.ToString(), 300 + operators.IndexOf(sb.ToString()), line));
@@ -163,8 +207,7 @@ namespace CompilingPrinciple
                 //不是上述的任何一种格式的单词
                 else
                 {
-                    System.Console.WriteLine("WARNING, invalid word" + contents[i].ToString() + " found");
-                    wrongtokens.Add(new WrongToken(contents[i].ToString(), line));
+                    wrongtokens.Add(new WrongToken(contents[i].ToString(), line, "invalid word " + contents[i].ToString() + " found"));
                 }
                     
             }
@@ -193,7 +236,7 @@ namespace CompilingPrinciple
 
         public bool isDelimiter(char ch)
         {
-            return delimiters.Contains(ch);
+            return delimiters.Contains(ch.ToString());
         }
 
         public bool isOperator(string str)

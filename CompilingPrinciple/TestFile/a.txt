@@ -1,8 +1,10 @@
 int main()
 {
  int a = 1;
- int b = 2;
- int c;
+ double b = 2;
+ long c;
  c = a + b;
+  int _d = a / b;
+  unsigned 2e = c ** b;
  return c;
 }

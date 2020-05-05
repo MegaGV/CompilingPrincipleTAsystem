@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -64,16 +65,18 @@ namespace CompilingPrinciple
     {
         private string value;
         private int line;
+        private string describe;
 
-        public WrongToken(string value, int line)
+        public WrongToken(string value, int line, string describe)
         {
             this.value = value;
             this.line = line;
+            this.describe = describe;
         }
 
         public string toString()
         {
-            return line + ":\t" + value + "\t";
+            return line + ":\t" + value + "\t" + describe;
         }
 
         public string getValue()
@@ -84,6 +87,11 @@ namespace CompilingPrinciple
         public int getLine()
         {
             return this.line;
+        }
+
+        public string getDescribe()
+        {
+            return this.describe;
         }
     }
 }
