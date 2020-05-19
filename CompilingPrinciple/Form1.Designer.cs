@@ -48,6 +48,7 @@
             this.Menu_WordAnalyse_WA = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_WordAnalyse_NFA = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_SentenceAnalyse = new System.Windows.Forms.ToolStripMenuItem();
+            this.算术表达式分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_SentenceAnalyse_SA = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_SentenceAnalyse_LL = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_SentenceAnalyse_Op = new System.Windows.Forms.ToolStripMenuItem();
@@ -227,19 +228,20 @@
             // Menu_WordAnalyse_WA
             // 
             this.Menu_WordAnalyse_WA.Name = "Menu_WordAnalyse_WA";
-            this.Menu_WordAnalyse_WA.Size = new System.Drawing.Size(224, 26);
+            this.Menu_WordAnalyse_WA.Size = new System.Drawing.Size(201, 26);
             this.Menu_WordAnalyse_WA.Text = "词法分析器";
             this.Menu_WordAnalyse_WA.Click += new System.EventHandler(this.WA);
             // 
             // Menu_WordAnalyse_NFA
             // 
             this.Menu_WordAnalyse_NFA.Name = "Menu_WordAnalyse_NFA";
-            this.Menu_WordAnalyse_NFA.Size = new System.Drawing.Size(224, 26);
+            this.Menu_WordAnalyse_NFA.Size = new System.Drawing.Size(201, 26);
             this.Menu_WordAnalyse_NFA.Text = "NFA_DFA_MFA";
             // 
             // Menu_SentenceAnalyse
             // 
             this.Menu_SentenceAnalyse.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.算术表达式分析ToolStripMenuItem,
             this.Menu_SentenceAnalyse_SA,
             this.Menu_SentenceAnalyse_LL,
             this.Menu_SentenceAnalyse_Op,
@@ -248,28 +250,35 @@
             this.Menu_SentenceAnalyse.Size = new System.Drawing.Size(83, 24);
             this.Menu_SentenceAnalyse.Text = "语法分析";
             // 
+            // 算术表达式分析ToolStripMenuItem
+            // 
+            this.算术表达式分析ToolStripMenuItem.Name = "算术表达式分析ToolStripMenuItem";
+            this.算术表达式分析ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.算术表达式分析ToolStripMenuItem.Text = "算术表达式分析";
+            this.算术表达式分析ToolStripMenuItem.Click += new System.EventHandler(this.ExpressionAnalyse);
+            // 
             // Menu_SentenceAnalyse_SA
             // 
             this.Menu_SentenceAnalyse_SA.Name = "Menu_SentenceAnalyse_SA";
-            this.Menu_SentenceAnalyse_SA.Size = new System.Drawing.Size(187, 26);
+            this.Menu_SentenceAnalyse_SA.Size = new System.Drawing.Size(224, 26);
             this.Menu_SentenceAnalyse_SA.Text = "语法分析器";
             // 
             // Menu_SentenceAnalyse_LL
             // 
             this.Menu_SentenceAnalyse_LL.Name = "Menu_SentenceAnalyse_LL";
-            this.Menu_SentenceAnalyse_LL.Size = new System.Drawing.Size(187, 26);
+            this.Menu_SentenceAnalyse_LL.Size = new System.Drawing.Size(224, 26);
             this.Menu_SentenceAnalyse_LL.Text = "LL(1)预测分析";
             // 
             // Menu_SentenceAnalyse_Op
             // 
             this.Menu_SentenceAnalyse_Op.Name = "Menu_SentenceAnalyse_Op";
-            this.Menu_SentenceAnalyse_Op.Size = new System.Drawing.Size(187, 26);
+            this.Menu_SentenceAnalyse_Op.Size = new System.Drawing.Size(224, 26);
             this.Menu_SentenceAnalyse_Op.Text = "运算符优先";
             // 
             // Menu_SentenceAnalyse_LR
             // 
             this.Menu_SentenceAnalyse_LR.Name = "Menu_SentenceAnalyse_LR";
-            this.Menu_SentenceAnalyse_LR.Size = new System.Drawing.Size(187, 26);
+            this.Menu_SentenceAnalyse_LR.Size = new System.Drawing.Size(224, 26);
             this.Menu_SentenceAnalyse_LR.Text = "LR分析";
             // 
             // Menu_MCode
@@ -683,6 +692,7 @@
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar2;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar3;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar4;
+        private System.Windows.Forms.ToolStripMenuItem 算术表达式分析ToolStripMenuItem;
     }
 }
 

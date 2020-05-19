@@ -15,6 +15,7 @@ namespace CompilingPrinciple
     {
         private string path = "";
         WordAnalyzer wordAnalyse = new WordAnalyzer();
+        SentenceAnalyzer sentenceAnalyzer = new SentenceAnalyzer();
 
         public Form1()
         {
@@ -99,6 +100,13 @@ namespace CompilingPrinciple
                 sb.Append("\n");
             }
             this.richTextBox3.Text = sb.ToString();
+        }
+
+        private void ExpressionAnalyse(object sender, EventArgs e)
+        {
+            sentenceAnalyzer.ExpressionAnalyse(this.richTextBox1.Text);
+            this.richTextBox2.Text = sentenceAnalyzer.getExpressionArgsInfo();
+            this.richTextBox3.Text = sentenceAnalyzer.getExpressionWrongInfo();
         }
     }
 }
