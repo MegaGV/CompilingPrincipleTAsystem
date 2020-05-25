@@ -10,54 +10,116 @@ namespace CompilingPrinciple
     class SentenceAnalyzer
     {
         private ExpressionAnalyzer expressionAnalyzer;
-        public SentenceAnalyzer()
-        {
+        private BoolExpressionAnalyzer boolexpressionAnalyzer;
+        private AssignmentAnalyzer assignmentAnalyzer;
+        private IfsAnalyzer ifsAnalyzer;
+        private List<Token> tokens;
 
+        public SentenceAnalyzer() { }
+
+        public void setTokens(List<Token> tokens)
+        {
+            this.tokens = tokens;
         }
 
-        public void ExpressionAnalyse(string str)
+        public void expressionAnalyse()
         {
-            expressionAnalyzer = new ExpressionAnalyzer(str);
+            expressionAnalyzer = new ExpressionAnalyzer(tokens);
             expressionAnalyzer.Analyse();
         }
-
         public string getExpressionWrongInfo()
         {
-            return expressionAnalyzer.getWrongInfo();
+            return "--------------------表达式错误信息...--------------------\n" +
+                "errors: " + expressionAnalyzer.getWrongCount() + '\n' + 
+                expressionAnalyzer.getWrongInfo();
         }
-
         public string getExpressionArgsInfo()
         {
-            return expressionAnalyzer.getArgsInfo();
+            return "--------------------表达式参数信息...--------------------\n" + 
+                expressionAnalyzer.getArgsInfo();
+        }
+
+        public void boolExpressionAnalyse()
+        {
+            boolexpressionAnalyzer = new BoolExpressionAnalyzer(tokens);
+            boolexpressionAnalyzer.Analyse();
+        }
+        public string getBoolExpressionWrongInfo()
+        {
+            return "--------------------布尔表达式错误信息...--------------------\n" +
+                "errors: " + boolexpressionAnalyzer.getWrongCount() + '\n' +
+                boolexpressionAnalyzer.getWrongInfo();
+        }
+        public string getBoolExpressionArgsInfo()
+        {
+            return "--------------------布尔表达式参数信息...--------------------\n" + 
+                boolexpressionAnalyzer.getArgsInfo();
+        }
+
+        public void assignmentAnalyse()
+        {
+            assignmentAnalyzer = new AssignmentAnalyzer(tokens);
+            assignmentAnalyzer.Analyse();
+        }
+        public string getAssignmentWrongInfo()
+        {
+            return "--------------------赋值语句错误信息...--------------------\n" +
+                "errors: " + assignmentAnalyzer.getWrongCount() + '\n' +
+                assignmentAnalyzer.getWrongInfo();
+        }
+        public string getAssignmentArgsInfo()
+        {
+            return "--------------------赋值语句参数信息...--------------------\n" + 
+                assignmentAnalyzer.getArgsInfo();
+        }
+
+        public void ifsAnalyse()
+        {
+            ifsAnalyzer = new IfsAnalyzer(tokens);
+            ifsAnalyzer.Analyse();
+        }
+        public string getIfsWrongInfo()
+        {
+            return "--------------------if语句错误信息...--------------------\n" +
+                "errors: " + ifsAnalyzer.getWrongCount() + '\n' +
+                ifsAnalyzer.getWrongInfo();
+        }
+        public string getIfsArgsInfo()
+        {
+            return "--------------------if语句参数信息...--------------------\n" + 
+                ifsAnalyzer.getArgsInfo();
         }
     }
 
-    class ExpressionAnalyzer
+    class Analyzer
     {
-        private string expression;
-        private char sym;
-        private int p = 0;
-        private List<string> wrongInfo;
-        private StringBuilder argsInfo;
+        protected List<Token> tokens;
+        protected Token token;
+        protected int p = 0;
+        protected List<string> wrongInfo;
+        protected StringBuilder argsInfo;
 
-        public ExpressionAnalyzer(string expression)
+        public Analyzer(List<Token> tokens)
         {
-            this.expression = expression;
-            sym = this.expression[p];
+            this.tokens = tokens;
+            if(tokens.Count != 0)
+                token = tokens[p];
             wrongInfo = new List<string>();
             argsInfo = new StringBuilder();
-            argsInfo.Append("--------------------表达式参数信息...--------------------\n");
         }
 
         public string getWrongInfo()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("--------------------表达式错误信息...--------------------\n");
-            sb.Append("errors: " + wrongInfo.Count + '\n');
             for (int i = 0; i < wrongInfo.Count; i++)
                 sb.Append(wrongInfo[i] + '\n');
             return sb.ToString();
-            
+
+        }
+
+        public int getWrongCount()
+        {
+            return wrongInfo.Count;
         }
 
         public string getArgsInfo()
@@ -67,32 +129,11 @@ namespace CompilingPrinciple
 
         public void NextToken()
         {
-            if (char.IsDigit(expression[p]))
-            {
-                StringBuilder digit = new StringBuilder();
-                while (p < expression.Length && char.IsDigit(expression[p]))
-                {
-                    digit.Append(expression[p]);
-                    p++;
-                }
-                argsInfo.Append(digit.ToString() + "\tdigit\n");
-                if (p >= expression.Length)
-                {
-                    return;
-                }
-            }
+            p++;
+            if (p >= tokens.Count)
+                token = new Token();
             else
-            {
-                argsInfo.Append(expression[p].ToString() + "\toperator\n");
-                p++;
-                if (p >= expression.Length)
-                {
-                    Error("No arg found after operator " + expression[p-1]);
-                    sym = ' ';
-                    return;
-                }
-            }
-            sym = expression[p];
+                token = tokens[p];
         }
 
         public void Error(string str)
@@ -100,22 +141,41 @@ namespace CompilingPrinciple
             this.wrongInfo.Add(str);
         }
 
-        public void Analyse()
+        public virtual void Analyse()
         {
+            
+        }
+    }
+
+    class ExpressionAnalyzer : Analyzer
+    {
+        public ExpressionAnalyzer(List<Token> tokens) : base(tokens) { }
+
+        public override void Analyse()
+        {
+            /*
+                E→TE’
+                E’→+TE’ | -TE’
+                T→FT’
+                T’→*FT’ | / FT’
+                F→(E) | i
+            */
             E();
         }
 
         public void E()
         {
             //E→TE’
+            T();
             E1();
         }
 
         public void E1()
         {
             //E’→+TE’ | -TE’
-            if (sym == '+' || sym == '-')
+            if (token.getValue().Equals("+") || token.getValue().Equals("-"))
             {
+                argsInfo.Append(token.getValue() + "\toperator\n");
                 NextToken();
                 T();
                 E1();
@@ -132,8 +192,9 @@ namespace CompilingPrinciple
         public void T1()
         {
             //T’→*FT’ | / FT’
-            if (sym == '*' || sym == '/')
+            if (token.getValue().Equals("*") || token.getValue().Equals("/"))
             {
+                argsInfo.Append(token.getValue() + "\toperator\n");
                 NextToken();
                 F();
                 T1();
@@ -143,18 +204,21 @@ namespace CompilingPrinciple
         public void F()
         {
             //F→(E) | i
-            if (char.IsDigit(sym))
+            if (token.getTokenTypeName().Equals("digit"))
             {
+                argsInfo.Append(token.getValue() + "\tdigit\n");
                 NextToken();
             }
-            else
+            else if (token.getTokenTypeName().Equals("operation") || token.getValue().Equals("(") || token.getValue().Equals(")"))
             {
-                if (sym == '(')
+                if (token.getValue().Equals("("))
                 {
+                    argsInfo.Append(token.getValue() + "\tdelimiter\n");
                     NextToken();
                     E();
-                    if (sym == ')')
+                    if (token.getValue().Equals(")"))
                     {
+                        argsInfo.Append(token.getValue() + "\tdelimiter\n");
                         NextToken();
                     }
                     else
@@ -164,9 +228,185 @@ namespace CompilingPrinciple
                 }
                 else
                 {
-                    Error("invalid input " + sym + " found");
+                    Error("wrong using of operator " + tokens[p].getValue() + " found");
                 }
             }
+            else
+            {
+                Error("invalid input " + token.getValue() + " found");
+            }
+        }
+    }
+
+    class BoolExpressionAnalyzer : Analyzer
+    {
+        public BoolExpressionAnalyzer(List<Token> tokens) : base(tokens) { }
+
+        public override void Analyse()
+        {
+            /*
+                BE -> BE or BT | BT
+                BT -> BT and BF | BF
+                BF -> not BF | (BE) | AE rop AE | i rop i | i
+            */
+            BE();
+        }
+
+        public void BE()
+        {
+
+        }
+    }
+
+    class AssignmentAnalyzer : Analyzer
+    {
+        private ExpressionAnalyzer expressionAnalyzer = new ExpressionAnalyzer(new List<Token>());
+        public AssignmentAnalyzer(List<Token> tokens) : base(tokens) { }
+
+        public override void Analyse()
+        {
+            /*
+                S -> id = E
+                E -> E’ + T | E’ - T |T
+                T -> T’ * F | T’ / F | F
+                F -> P | -P
+                P -> i | (E)
+            */
+            S();
+        }
+
+        public void S()
+        {
+            if (token.getTokenTypeName().Equals("identifier"))
+            {
+                argsInfo.Append(token.getValue() + "\tidentifier\n");
+                NextToken();
+                if (token.getValue().Equals("="))
+                {
+                    argsInfo.Append(token.getValue() + "\toperator\n");
+                    NextToken();
+                    List<Token> expressiontoken = new List<Token>();
+                    for (int i = p; i < tokens.Count; i++)
+                        expressiontoken.Add(tokens[i]);
+                    if (expressiontoken.Count == 0)
+                    {
+                        Error("No expression found after =");
+                    }
+                    else
+                    {
+                        expressionAnalyzer = new ExpressionAnalyzer(expressiontoken);
+                        expressionAnalyzer.Analyse();
+                    }
+                }
+                else
+                {
+                    Error("No assignment opeator found after identifier" + tokens[p - 1].getValue());
+                }
+            }
+            else
+            {
+                Error("No identifier found at the begining");
+            }
+        }
+
+        public new string getWrongInfo()
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < wrongInfo.Count; i++)
+                sb.Append(wrongInfo[i] + '\n');
+            sb.Append(expressionAnalyzer.getWrongInfo());
+            return sb.ToString();
+
+        }
+
+        public new int getWrongCount()
+        {
+            return wrongInfo.Count + expressionAnalyzer.getWrongCount();
+        }
+
+        public new string getArgsInfo()
+        {
+            return argsInfo.ToString() + expressionAnalyzer.getArgsInfo();
+        }
+    }
+
+    class IfsAnalyzer : Analyzer
+    {
+        private BoolExpressionAnalyzer boolExpressionAnalyzer = new BoolExpressionAnalyzer(new List<Token>());
+
+        public IfsAnalyzer(List<Token> tokens) : base(tokens) { }
+
+        public override void Analyse()
+        {
+            /*
+                S -> CS'
+                C -> if E
+                S -> TS''
+                T -> CS' else
+            */
+            S();
+        }
+
+        public void S()
+        {
+            if (token.getValue().Equals("if"))
+            {
+                argsInfo.Append("if\tkeyword\n");
+                NextToken();
+                if (token.getValue().Equals("("))
+                {
+                    argsInfo.Append("(\tdelimiter\n");
+                    List<Token> boolTokens = new List<Token>();
+                    while (true) 
+                    {
+                        NextToken();
+                        if (p == tokens.Count)
+                        {
+                            Error("Wrong boolexpression found");
+                            break;
+                        }
+                        else if (token.getValue().Equals(")"))
+                        {
+                            boolExpressionAnalyzer = new BoolExpressionAnalyzer(boolTokens);
+                            boolExpressionAnalyzer.Analyse();
+                            argsInfo.Append(")\tdelimiter\n");
+                            break;
+                        }
+                        else
+                            boolTokens.Add(token);
+                    }
+                }
+                else
+                {
+                    Error("No boolexpression found");
+                }
+            }
+            else
+            {
+                Error("No 'if found' at the begining");
+            }
+        }
+
+
+
+        public new string getWrongInfo()
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < wrongInfo.Count; i++)
+                sb.Append(wrongInfo[i] + '\n');
+            sb.Append(boolExpressionAnalyzer.getWrongInfo());
+            return sb.ToString();
+
+        }
+
+        public new int getWrongCount()
+        {
+            return wrongInfo.Count + boolExpressionAnalyzer.getWrongCount();
+        }
+
+        public new string getArgsInfo()
+        {
+            return argsInfo.ToString() + boolExpressionAnalyzer.getArgsInfo();
         }
     }
 }

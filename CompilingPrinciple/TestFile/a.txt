@@ -4,7 +4,7 @@ int main()
  double b = 2;
  long c;
  c = a + b;
-  int _d = a / b;
-  unsigned 2e = c ** b;
+ int _d = a / b;
+ unsigned 2e = c ** b;
  return c;
 }

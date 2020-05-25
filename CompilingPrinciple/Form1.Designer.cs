@@ -48,7 +48,11 @@
             this.Menu_WordAnalyse_WA = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_WordAnalyse_NFA = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_SentenceAnalyse = new System.Windows.Forms.ToolStripMenuItem();
-            this.算术表达式分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.句法分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.算术表达式分析ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.布尔表达式分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.赋值语句分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.if语句分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_SentenceAnalyse_SA = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_SentenceAnalyse_LL = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_SentenceAnalyse_Op = new System.Windows.Forms.ToolStripMenuItem();
@@ -241,7 +245,7 @@
             // Menu_SentenceAnalyse
             // 
             this.Menu_SentenceAnalyse.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.算术表达式分析ToolStripMenuItem,
+            this.句法分析ToolStripMenuItem,
             this.Menu_SentenceAnalyse_SA,
             this.Menu_SentenceAnalyse_LL,
             this.Menu_SentenceAnalyse_Op,
@@ -250,12 +254,44 @@
             this.Menu_SentenceAnalyse.Size = new System.Drawing.Size(83, 24);
             this.Menu_SentenceAnalyse.Text = "语法分析";
             // 
-            // 算术表达式分析ToolStripMenuItem
+            // 句法分析ToolStripMenuItem
             // 
-            this.算术表达式分析ToolStripMenuItem.Name = "算术表达式分析ToolStripMenuItem";
-            this.算术表达式分析ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.算术表达式分析ToolStripMenuItem.Text = "算术表达式分析";
-            this.算术表达式分析ToolStripMenuItem.Click += new System.EventHandler(this.ExpressionAnalyse);
+            this.句法分析ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.算术表达式分析ToolStripMenuItem1,
+            this.布尔表达式分析ToolStripMenuItem,
+            this.赋值语句分析ToolStripMenuItem,
+            this.if语句分析ToolStripMenuItem});
+            this.句法分析ToolStripMenuItem.Name = "句法分析ToolStripMenuItem";
+            this.句法分析ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.句法分析ToolStripMenuItem.Text = "句法分析";
+            // 
+            // 算术表达式分析ToolStripMenuItem1
+            // 
+            this.算术表达式分析ToolStripMenuItem1.Name = "算术表达式分析ToolStripMenuItem1";
+            this.算术表达式分析ToolStripMenuItem1.Size = new System.Drawing.Size(224, 26);
+            this.算术表达式分析ToolStripMenuItem1.Text = "算术表达式分析";
+            this.算术表达式分析ToolStripMenuItem1.Click += new System.EventHandler(this.ExpressionAnalyse);
+            // 
+            // 布尔表达式分析ToolStripMenuItem
+            // 
+            this.布尔表达式分析ToolStripMenuItem.Name = "布尔表达式分析ToolStripMenuItem";
+            this.布尔表达式分析ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.布尔表达式分析ToolStripMenuItem.Text = "布尔表达式分析";
+            this.布尔表达式分析ToolStripMenuItem.Click += new System.EventHandler(this.BoolExpressionAnalyse);
+            // 
+            // 赋值语句分析ToolStripMenuItem
+            // 
+            this.赋值语句分析ToolStripMenuItem.Name = "赋值语句分析ToolStripMenuItem";
+            this.赋值语句分析ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.赋值语句分析ToolStripMenuItem.Text = "赋值语句分析";
+            this.赋值语句分析ToolStripMenuItem.Click += new System.EventHandler(this.AssignmentAnalyse);
+            // 
+            // if语句分析ToolStripMenuItem
+            // 
+            this.if语句分析ToolStripMenuItem.Name = "if语句分析ToolStripMenuItem";
+            this.if语句分析ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.if语句分析ToolStripMenuItem.Text = "If语句分析";
+            this.if语句分析ToolStripMenuItem.Click += new System.EventHandler(this.IfsAnalyse);
             // 
             // Menu_SentenceAnalyse_SA
             // 
@@ -529,7 +565,7 @@
             this.splitContainer2.Panel2.AutoScroll = true;
             this.splitContainer2.Panel2.Controls.Add(this.richTextBox3);
             this.splitContainer2.Size = new System.Drawing.Size(893, 654);
-            this.splitContainer2.SplitterDistance = 283;
+            this.splitContainer2.SplitterDistance = 282;
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 0;
             // 
@@ -540,7 +576,7 @@
             this.richTextBox2.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.ReadOnly = true;
-            this.richTextBox2.Size = new System.Drawing.Size(893, 283);
+            this.richTextBox2.Size = new System.Drawing.Size(893, 282);
             this.richTextBox2.TabIndex = 0;
             this.richTextBox2.Text = "";
             // 
@@ -551,7 +587,7 @@
             this.richTextBox3.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBox3.Name = "richTextBox3";
             this.richTextBox3.ReadOnly = true;
-            this.richTextBox3.Size = new System.Drawing.Size(893, 366);
+            this.richTextBox3.Size = new System.Drawing.Size(893, 367);
             this.richTextBox3.TabIndex = 0;
             this.richTextBox3.Text = "";
             // 
@@ -692,7 +728,11 @@
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar2;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar3;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar4;
-        private System.Windows.Forms.ToolStripMenuItem 算术表达式分析ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 句法分析ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 算术表达式分析ToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem 布尔表达式分析ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 赋值语句分析ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem if语句分析ToolStripMenuItem;
     }
 }
 

@@ -254,7 +254,30 @@ namespace CompilingPrinciple
             return keywords.Contains(str);
         }
 
-        
+        public string getTokensInfo()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("--------------------token表信息...--------------------\n");
+            foreach (Token token in tokens)
+            {
+                sb.Append(token.toString());
+                sb.Append("\n");
+            }
+            return sb.ToString();
+        }
+
+        public string getWrongTokensInfo()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("--------------------词法分析错误信息...--------------------\n");
+            sb.Append("词法分析结束 - " + wrongtokens.Count + " error(s)\n");
+            foreach (WrongToken token in wrongtokens)
+            {
+                sb.Append(token.toString());
+                sb.Append("\n");
+            }
+            return sb.ToString();
+        }
 
     }
 }

@@ -26,6 +26,14 @@ namespace CompilingPrinciple
             this.line = line;
         }
 
+        public Token()
+        {
+            tokenType = TokenType.delimiter;
+            value = " ";
+            typeCode = 409;
+            this.line = -1;
+        }
+
         public string getTokenTypeName()
         {
             switch (tokenType)

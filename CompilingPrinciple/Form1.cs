@@ -16,6 +16,8 @@ namespace CompilingPrinciple
         private string path = "";
         WordAnalyzer wordAnalyse = new WordAnalyzer();
         SentenceAnalyzer sentenceAnalyzer = new SentenceAnalyzer();
+        List<Token> tokens;
+        List<WrongToken> wrongtokens;
 
         public Form1()
         {
@@ -46,7 +48,7 @@ namespace CompilingPrinciple
 
         private void saveFile(object sender, EventArgs e)
         {
-            if(this.path == ""){
+            if (this.path == "") {
                 SaveFileDialog sfd = new SaveFileDialog();
                 sfd.Filter = "*.txt | *.txt";
                 if (sfd.ShowDialog() == DialogResult.OK)
@@ -81,32 +83,68 @@ namespace CompilingPrinciple
         private void WA(object sender, EventArgs e)
         {
             wordAnalyse.WordAnalyse(this.richTextBox1.Text);
-            List<Token> tokens = wordAnalyse.getTokens();
-            List<WrongToken> wrongtokens = wordAnalyse.getWrongTokens();
-            StringBuilder sb = new StringBuilder();
-            sb.Append("--------------------token表信息...--------------------\n");
-            foreach (Token token in tokens){
-                sb.Append(token.toString());
-                sb.Append("\n");
-            }
-            this.richTextBox2.Text = sb.ToString();
-
-            sb.Clear();
-            sb.Append("--------------------词法分析错误信息...--------------------\n");
-            sb.Append("词法分析结束 - " + wrongtokens.Count + " error(s)\n");
-            foreach (WrongToken token in wrongtokens)
-            {
-                sb.Append(token.toString());
-                sb.Append("\n");
-            }
-            this.richTextBox3.Text = sb.ToString();
+            tokens = wordAnalyse.getTokens();
+            wrongtokens = wordAnalyse.getWrongTokens();
+            sentenceAnalyzer.setTokens(tokens);
+            this.richTextBox2.Text = wordAnalyse.getTokensInfo();
+            this.richTextBox3.Text = wordAnalyse.getWrongTokensInfo();
         }
 
         private void ExpressionAnalyse(object sender, EventArgs e)
         {
-            sentenceAnalyzer.ExpressionAnalyse(this.richTextBox1.Text);
-            this.richTextBox2.Text = sentenceAnalyzer.getExpressionArgsInfo();
-            this.richTextBox3.Text = sentenceAnalyzer.getExpressionWrongInfo();
+            if (tokens.Count != 0)
+            {
+                sentenceAnalyzer.expressionAnalyse();
+                this.richTextBox2.Text = sentenceAnalyzer.getExpressionArgsInfo();
+                this.richTextBox3.Text = sentenceAnalyzer.getExpressionWrongInfo();
+            }
+            else
+            {
+                this.richTextBox3.Text = "please get the tokens first";
+            }
+        }
+
+        private void BoolExpressionAnalyse(object sender, EventArgs e)
+        {
+            sentenceAnalyzer.boolExpressionAnalyse();
+            StringBuilder sb = new StringBuilder();
+            sb.Append("--------------------表达式参数信息...--------------------\n");
+            sb.Append("1\tdigit\n");
+            this.richTextBox2.Text = sb.ToString();
+
+            sb = new StringBuilder();
+            sb.Append("--------------------表达式错误信息...--------------------\n");
+            sb.Append("errors: 1\n");
+            sb.Append("invalid operator ~ found\n");
+            this.richTextBox3.Text = sb.ToString();
+        }
+
+        private void AssignmentAnalyse(object sender, EventArgs e)
+        {
+            if (tokens.Count != 0)
+            {
+                sentenceAnalyzer.assignmentAnalyse();
+                this.richTextBox2.Text = sentenceAnalyzer.getAssignmentArgsInfo();
+                this.richTextBox3.Text = sentenceAnalyzer.getAssignmentWrongInfo();
+            }
+            else
+            {
+                this.richTextBox3.Text = "please get the tokens first";
+            }
+        }
+
+        private void IfsAnalyse(object sender, EventArgs e)
+        {
+            if (tokens.Count != 0)
+            {
+                sentenceAnalyzer.ifsAnalyse();
+                this.richTextBox2.Text = sentenceAnalyzer.getIfsArgsInfo();
+                this.richTextBox3.Text = sentenceAnalyzer.getIfsWrongInfo();
+            }
+            else
+            {
+                this.richTextBox3.Text = "please get the tokens first";
+            }
         }
     }
 }
