@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 
 namespace CompilingPrinciple
 {
@@ -13,6 +15,9 @@ namespace CompilingPrinciple
         private BoolExpressionAnalyzer boolexpressionAnalyzer;
         private AssignmentAnalyzer assignmentAnalyzer;
         private IfsAnalyzer ifsAnalyzer;
+        private ForAnalyzer forAnalyzer;
+        private WhileAnalyzer whileAnalyzer;
+        private DoWhileAnalyzer doWhileAnalyzer;
         private List<Token> tokens;
 
         public SentenceAnalyzer() { }
@@ -89,6 +94,57 @@ namespace CompilingPrinciple
             return "--------------------if语句参数信息...--------------------\n" + 
                 ifsAnalyzer.getArgsInfo();
         }
+
+        public void forAnalyse()
+        {
+            forAnalyzer = new ForAnalyzer(tokens);
+            forAnalyzer.Analyse();
+        }
+        public string getForWrongInfo()
+        {
+            return "--------------------for语句错误信息...--------------------\n" +
+                "errors: " + forAnalyzer.getWrongCount() + '\n' +
+                forAnalyzer.getWrongInfo();
+        }
+        public string getForArgsInfo()
+        {
+            return "--------------------for语句参数信息...--------------------\n" +
+                forAnalyzer.getArgsInfo();
+        }
+
+        public void whileAnalyse()
+        {
+            whileAnalyzer = new WhileAnalyzer (tokens);
+            whileAnalyzer.Analyse();
+        }
+        public string getWhileWrongInfo()
+        {
+            return "--------------------while语句错误信息...--------------------\n" +
+                "errors: " + whileAnalyzer.getWrongCount() + '\n' +
+                whileAnalyzer.getWrongInfo();
+        }
+        public string getWhileArgsInfo()
+        {
+            return "--------------------while语句参数信息...--------------------\n" +
+                whileAnalyzer.getArgsInfo();
+        }
+
+        public void doWhileAnalyse()
+        {
+            doWhileAnalyzer = new DoWhileAnalyzer(tokens);
+            doWhileAnalyzer.Analyse();
+        }
+        public string getDoWhileWrongInfo()
+        {
+            return "--------------------dowhile语句错误信息...--------------------\n" +
+                "errors: " + doWhileAnalyzer.getWrongCount() + '\n' +
+                doWhileAnalyzer.getWrongInfo();
+        }
+        public string getDoWhileArgsInfo()
+        {
+            return "--------------------dowhile语句参数信息...--------------------\n" +
+                doWhileAnalyzer.getArgsInfo();
+        }
     }
 
     class Analyzer
@@ -127,7 +183,7 @@ namespace CompilingPrinciple
             return argsInfo.ToString();
         }
 
-        public void NextToken()
+        protected void NextToken()
         {
             p++;
             if (p >= tokens.Count)
@@ -136,7 +192,7 @@ namespace CompilingPrinciple
                 token = tokens[p];
         }
 
-        public void Error(string str)
+        protected void Error(string str)
         {
             this.wrongInfo.Add(str);
         }
@@ -163,14 +219,14 @@ namespace CompilingPrinciple
             E();
         }
 
-        public void E()
+        private void E()
         {
             //E→TE’
             T();
             E1();
         }
 
-        public void E1()
+        private void E1()
         {
             //E’→+TE’ | -TE’
             if (token.getValue().Equals("+") || token.getValue().Equals("-"))
@@ -182,14 +238,14 @@ namespace CompilingPrinciple
             }
         }
 
-        public void T()
+        private void T()
         {
             //T→FT’
             F();
             T1();
         }
 
-        public void T1()
+        private void T1()
         {
             //T’→*FT’ | / FT’
             if (token.getValue().Equals("*") || token.getValue().Equals("/"))
@@ -201,7 +257,7 @@ namespace CompilingPrinciple
             }
         }
 
-        public void F()
+        private void F()
         {
             //F→(E) | i
             if (token.getTokenTypeName().Equals("digit"))
@@ -245,16 +301,126 @@ namespace CompilingPrinciple
         public override void Analyse()
         {
             /*
-                BE -> BE or BT | BT
-                BT -> BT and BF | BF
-                BF -> not BF | (BE) | AE rop AE | i rop i | i
-            */
+             * BE -> BT BE'
+             * BE'-> || BE |  ε
+             * BT -> BF BT'
+             * BT'-> && BT | ε
+             * BF -> ! BF | (BE) | AE rop AE | i BF'
+             * BF'-> rop i | ε
+             */
             BE();
         }
 
-        public void BE()
+        private void BE()
         {
+            //BE -> BT BE'
+            BT();
+            BE1();
+        }
 
+        private void BE1()
+        {
+            //BE'-> || BE |  ε
+            if (token.getValue().Equals("||"))
+            {
+                argsInfo.Append("||\toperator\n");
+                NextToken();
+                BE();
+            }
+        }
+
+        private void BT()
+        {
+            //BT -> BF BT'
+            BF();
+            BT1();
+        }
+
+        private void BT1()
+        {
+            //BT'-> && BT | ε
+            if (token.getValue().Equals("&&"))
+            {
+                argsInfo.Append("&&\toperator\n");
+                NextToken();
+                BT();
+            }
+        }
+
+        private void BF()
+        {
+            //BF -> ! BF | (BE) | AE rop AE | i BF'
+            string value = token.getValue();
+            string type = token.getTokenTypeName();
+            if (value.Equals("!"))
+            {
+                argsInfo.Append("!\toperator\n");
+                NextToken();
+                BF();
+            }
+            else if (value.Equals("("))
+            {
+                argsInfo.Append("(\tdelimeter\n");
+                NextToken();
+                BE();
+                if (token.getValue().Equals(")"))
+                {
+                    argsInfo.Append(token.getValue() + "\tdelimiter\n");
+                    NextToken();
+                }
+                else
+                {
+                    Error("brackets not fit");
+                }
+            }
+            else if (type.Equals("digit"))
+            {
+                argsInfo.Append(token.getValue() + "\tdigit\n");
+                NextToken();
+                string rop = token.getValue();
+                if (rop == ">" || rop == "<" || rop == ">=" || rop == "<=" || rop == "==")
+                {
+                    argsInfo.Append(rop + "\toperator\n");
+                    NextToken();
+                    if (token.getTokenTypeName().Equals("digit"))
+                    {
+                        argsInfo.Append(token.getValue() + "\tdigit\n");
+                        NextToken();
+                    }
+                    else
+                        Error("No fit digit found after " + rop);
+                }
+                else
+                    Error("No operator found after digit");
+            }
+            else if (type.Equals("identifier"))
+            {
+                argsInfo.Append(token.getValue() + "\tidentifier\n");
+                NextToken();
+                BF1();
+            }
+            else
+            {
+                Error("invalid input " + token.getValue() + " found");
+            }
+        }
+
+        private void BF1()
+        {
+            //BF'-> rop i | ε
+            string rop = token.getValue();
+            if (rop == ">" || rop == "<" || rop == ">=" || rop == "<=" || rop == "==")
+            {
+                argsInfo.Append(rop + "\toperator\n");
+                NextToken();
+                if (token.getTokenTypeName().Equals("identifier"))
+                {
+                    argsInfo.Append(token.getValue() + "\tidentifier\n");
+                    NextToken();
+                }
+                else
+                    Error("No fit identifier found after " + rop);
+            }
         }
     }
 
@@ -275,7 +441,7 @@ namespace CompilingPrinciple
             S();
         }
 
-        public void S()
+        private void S()
         {
             if (token.getTokenTypeName().Equals("identifier"))
             {
@@ -309,7 +475,7 @@ namespace CompilingPrinciple
             }
         }
 
-        public new string getWrongInfo()
+        private new string getWrongInfo()
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < wrongInfo.Count; i++)
@@ -319,12 +485,12 @@ namespace CompilingPrinciple
 
         }
 
-        public new int getWrongCount()
+        private new int getWrongCount()
         {
             return wrongInfo.Count + expressionAnalyzer.getWrongCount();
         }
 
-        public new string getArgsInfo()
+        private new string getArgsInfo()
         {
             return argsInfo.ToString() + expressionAnalyzer.getArgsInfo();
         }
@@ -347,7 +513,7 @@ namespace CompilingPrinciple
             S();
         }
 
-        public void S()
+        private void S()
         {
             if (token.getValue().Equals("if"))
             {
@@ -388,7 +554,7 @@ namespace CompilingPrinciple
                 Error("No 'if' found at the begining");
         }
 
-        public void E()
+        private void E()
         {
             argsInfo.Append("(\tdelimiter\n");
             List<Token> boolTokens = new List<Token>();
@@ -413,7 +579,7 @@ namespace CompilingPrinciple
             }
         }
 
-        public void C()
+        private void C()
         {
             argsInfo.Append("{\tdelimeter\n");
             while (true)
@@ -436,7 +602,7 @@ namespace CompilingPrinciple
         }
 
 
-        public new string getWrongInfo()
+        private new string getWrongInfo()
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < wrongInfo.Count; i++)
@@ -446,14 +612,309 @@ namespace CompilingPrinciple
 
         }
 
-        public new int getWrongCount()
+        private new int getWrongCount()
         {
             return wrongInfo.Count + boolExpressionAnalyzer.getWrongCount();
         }
 
-        public new string getArgsInfo()
+        private new string getArgsInfo()
         {
             return argsInfo.ToString() + boolExpressionAnalyzer.getArgsInfo();
+        }
+    }
+
+    class ForAnalyzer : Analyzer
+    {
+        public ForAnalyzer(List<Token> tokens) : base(tokens) { }
+
+        public override void Analyse()
+        {
+            S();
+        }
+
+        private void S()
+        {
+            //S -> for (E', E'', E''') S'
+            if (token.getValue().Equals("for")){
+                argsInfo.Append("for\tkeyword\n");
+                NextToken();
+                if (token.getValue().Equals("("))
+                {
+                    argsInfo.Append("(\tdelimeter\n");
+                    NextToken();
+                    E1();
+                    E2();
+                    E3();
+                    if (token.getValue().Equals(")"))
+                    {
+                        argsInfo.Append(")\tdelimeter\n");
+                        NextToken();
+                        S1();
+                    }
+                    else
+                        Error("brackets not fit");
+                }
+                else
+                    Error("Wrong format which has no '('");
+            }
+            else
+                Error("No 'for' found at the begining");
+        }
+
+        private void E1()
+        {
+            while (true)
+            {
+                if (p >= tokens.Count)
+                {
+                    Error("Wrong format for for's()");
+                    break;
+                }
+                argsInfo.Append(token.getValue() + "\t" + token.getTokenTypeName() +"\n");
+                NextToken();
+                if (token.getValue().Equals(";"))
+                {
+                    break;
+                }
+            }
+        }
+
+        private void E2()
+        {
+            while (true)
+            {
+                if (p >= tokens.Count)
+                {
+                    Error("Wrong format for for's()");
+                    break;
+                }
+                argsInfo.Append(token.getValue() + "\t" + token.getTokenTypeName() + "\n");
+                NextToken();
+                if (token.getValue().Equals(";"))
+                {
+                    break;
+                }
+            }
+        }
+
+        private void E3()
+        {
+            while (true)
+            {
+                if (p >= tokens.Count)
+                {
+                    Error("Wrong format for for's()");
+                    break;
+                }
+                argsInfo.Append(token.getValue() + "\t" + token.getTokenTypeName() + "\n");
+                NextToken();
+                if (token.getValue().Equals(")"))
+                {
+                    break;
+                }
+            }
+        }
+
+        private void S1() 
+        { 
+            if (token.getValue().Equals("{"))
+            {
+                while (true)
+                {
+                    if (p >= tokens.Count)
+                    {
+                        Error("Over function body part");
+                        break;
+                    }
+                    argsInfo.Append(token.getValue() + "\t" + token.getTokenTypeName() + "\n");
+                    NextToken();
+                    if (token.getValue().Equals("}"))
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+                Error("Wrong function body found");
+        }
+    }
+
+    class WhileAnalyzer : Analyzer
+    {
+        public WhileAnalyzer(List<Token> tokens) : base(tokens) { }
+
+        public override void Analyse()
+        {
+            S();
+        }
+
+        private void S()
+        {
+            //S -> while(E) S’
+            if (token.getValue().Equals("while"))
+            {
+                argsInfo.Append("while\tkeyword\n");
+                NextToken();
+                if (token.getValue().Equals("("))
+                {
+                    argsInfo.Append("(\tdelimeter\n");
+                    NextToken();
+                    E();
+                    if (token.getValue().Equals(")"))
+                    {
+                        argsInfo.Append(")\tdelimeter\n");
+                        NextToken();
+                        S1();
+                    }
+                    else
+                        Error("Wrong format for while's()");
+                }
+                else
+                    Error("Wrong format for while's()");
+            }
+            else
+                Error("No 'while' found at the begining");
+        }
+
+        private void E()
+        {
+            while (true)
+            {
+                if (p >= tokens.Count)
+                {
+                    Error("Wrong format for while's()");
+                    break;
+                }
+                argsInfo.Append(token.getValue() + "\t" + token.getTokenTypeName() + "\n");
+                NextToken();
+                if (token.getValue().Equals(")"))
+                {
+                    break;
+                }
+            }
+        }
+
+        private void S1()
+        {
+            if (token.getValue().Equals("{"))
+            {
+                argsInfo.Append("{\tdelimeter\n");
+                NextToken();
+                while (true)
+                {
+                    if (p >= tokens.Count)
+                    {
+                        Error("Over function body part");
+                        break;
+                    }
+                    argsInfo.Append(token.getValue() + "\t" + token.getTokenTypeName() + "\n");
+                    NextToken();
+                    if (token.getValue().Equals("}"))
+                    {
+                        argsInfo.Append("}\tdelimeter\n");
+                        NextToken();
+                        break;
+                    }
+                }
+            }
+            else
+                Error("Wrong function body found");
+        }
+    }
+
+    class DoWhileAnalyzer : Analyzer
+    {
+        public DoWhileAnalyzer(List<Token> tokens) : base(tokens) { }
+
+        public override void Analyse()
+        {
+            S();
+        }
+
+        private void S()
+        {
+            //S -> do S’ while E
+            if (token.getValue().Equals("do"))
+            {
+                argsInfo.Append("do\tkeyword\n");
+                NextToken();
+                S1();
+                if (token.getValue().Equals("while"))
+                {
+                    argsInfo.Append("while\tkeyword\n");
+                    NextToken();
+                    if (token.getValue().Equals("("))
+                    {
+                        argsInfo.Append("(\tdelimeter\n");
+                        NextToken();
+                        E();
+                        if (token.getValue().Equals(")"))
+                        {
+                            argsInfo.Append(")\tdelimeter\n");
+                            NextToken();
+                            if (token.getValue().Equals(";"))
+                            {
+                                argsInfo.Append(";\tdelimeter\n");
+                            }
+                            else
+                                Error("No ';' found at the end");
+                        }
+                        else
+                            Error("Wrong format for while's()");
+                    }
+                    else
+                        Error("Wrong format for while's()");
+                }
+                else
+                    Error("No 'while' found after function");
+            }
+            else
+                Error("No 'do' found at the begining");
+        }
+
+        private void S1()
+        {
+            if (token.getValue().Equals("{"))
+            {
+                argsInfo.Append("{\tdelimeter\n");
+                NextToken();
+                while (true)
+                {
+                    if (p >= tokens.Count)
+                    {
+                        Error("Over function body part");
+                        break;
+                    }
+                    argsInfo.Append(token.getValue() + "\t" + token.getTokenTypeName() + "\n");
+                    NextToken();
+                    if (token.getValue().Equals("}"))
+                    {
+                        argsInfo.Append("}\tdelimeter\n");
+                        NextToken();
+                        break;
+                    }
+                }
+            }
+            else
+                Error("Wrong function body found");
+        }
+
+        private void E()
+        {
+            while (true)
+            {
+                if (p >= tokens.Count)
+                {
+                    Error("Wrong format for while's()");
+                    break;
+                }
+                argsInfo.Append(token.getValue() + "\t" + token.getTokenTypeName() + "\n");
+                NextToken();
+                if (token.getValue().Equals(")"))
+                {
+                    break;
+                }
+            }
         }
     }
 }

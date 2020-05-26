@@ -202,7 +202,8 @@ namespace CompilingPrinciple
                             wrongtokens.Add(new WrongToken(sb.ToString(), line, "invalid operator " + sb.ToString() + " found"));
                         }
                     }
-                    tokens.Add(new Token(TokenType.operation, sb.ToString(), 300 + operators.IndexOf(sb.ToString()), line));
+                    else
+                        tokens.Add(new Token(TokenType.operation, sb.ToString(), 300 + operators.IndexOf(sb.ToString()), line));
                 }
                 //不是上述的任何一种格式的单词
                 else

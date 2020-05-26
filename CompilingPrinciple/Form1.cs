@@ -106,17 +106,16 @@ namespace CompilingPrinciple
 
         private void BoolExpressionAnalyse(object sender, EventArgs e)
         {
-            sentenceAnalyzer.boolExpressionAnalyse();
-            StringBuilder sb = new StringBuilder();
-            sb.Append("--------------------表达式参数信息...--------------------\n");
-            sb.Append("1\tdigit\n");
-            this.richTextBox2.Text = sb.ToString();
-
-            sb = new StringBuilder();
-            sb.Append("--------------------表达式错误信息...--------------------\n");
-            sb.Append("errors: 1\n");
-            sb.Append("invalid operator ~ found\n");
-            this.richTextBox3.Text = sb.ToString();
+            if (tokens.Count != 0)
+            {
+                sentenceAnalyzer.boolExpressionAnalyse();
+                this.richTextBox2.Text = sentenceAnalyzer.getBoolExpressionArgsInfo();
+                this.richTextBox3.Text = sentenceAnalyzer.getBoolExpressionWrongInfo();
+            }
+            else
+            {
+                this.richTextBox3.Text = "please get the tokens first";
+            }
         }
 
         private void AssignmentAnalyse(object sender, EventArgs e)
@@ -140,6 +139,48 @@ namespace CompilingPrinciple
                 sentenceAnalyzer.ifsAnalyse();
                 this.richTextBox2.Text = sentenceAnalyzer.getIfsArgsInfo();
                 this.richTextBox3.Text = sentenceAnalyzer.getIfsWrongInfo();
+            }
+            else
+            {
+                this.richTextBox3.Text = "please get the tokens first";
+            }
+        }
+
+        private void ForAnalyse(object sender, EventArgs e)
+        {
+            if (tokens.Count != 0)
+            {
+                sentenceAnalyzer.forAnalyse();
+                this.richTextBox2.Text = sentenceAnalyzer.getForArgsInfo();
+                this.richTextBox3.Text = sentenceAnalyzer.getForWrongInfo();
+            }
+            else
+            {
+                this.richTextBox3.Text = "please get the tokens first";
+            }
+        }
+
+        private void WhileAnalyse(object sender, EventArgs e)
+        {
+            if (tokens.Count != 0)
+            {
+                sentenceAnalyzer.whileAnalyse();
+                this.richTextBox2.Text = sentenceAnalyzer.getWhileArgsInfo();
+                this.richTextBox3.Text = sentenceAnalyzer.getWhileWrongInfo();
+            }
+            else
+            {
+                this.richTextBox3.Text = "please get the tokens first";
+            }
+        }
+
+        private void DoWhileAnalyse(object sender, EventArgs e)
+        {
+            if (tokens.Count != 0)
+            {
+                sentenceAnalyzer.doWhileAnalyse();
+                this.richTextBox2.Text = sentenceAnalyzer.getDoWhileArgsInfo();
+                this.richTextBox3.Text = sentenceAnalyzer.getDoWhileWrongInfo();
             }
             else
             {

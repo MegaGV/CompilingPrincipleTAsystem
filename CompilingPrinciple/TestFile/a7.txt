@@ -1,0 +1,3 @@
+do {
+  double b = 3;
+} while (true);

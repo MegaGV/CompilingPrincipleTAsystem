@@ -53,6 +53,9 @@
             this.布尔表达式分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.赋值语句分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.if语句分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.for语句分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.while语句分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.doWhile语句分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_SentenceAnalyse_SA = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_SentenceAnalyse_LL = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_SentenceAnalyse_Op = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,9 +91,6 @@
             this.toolStripProgressBar2 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripProgressBar3 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripProgressBar4 = new System.Windows.Forms.ToolStripProgressBar();
-            this.for语句分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.while语句分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.doWhile语句分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Menu_.SuspendLayout();
             this.Tool.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -298,6 +298,27 @@
             this.if语句分析ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.if语句分析ToolStripMenuItem.Text = "if语句分析";
             this.if语句分析ToolStripMenuItem.Click += new System.EventHandler(this.IfsAnalyse);
+            // 
+            // for语句分析ToolStripMenuItem
+            // 
+            this.for语句分析ToolStripMenuItem.Name = "for语句分析ToolStripMenuItem";
+            this.for语句分析ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.for语句分析ToolStripMenuItem.Text = "for语句分析";
+            this.for语句分析ToolStripMenuItem.Click += new System.EventHandler(this.ForAnalyse);
+            // 
+            // while语句分析ToolStripMenuItem
+            // 
+            this.while语句分析ToolStripMenuItem.Name = "while语句分析ToolStripMenuItem";
+            this.while语句分析ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.while语句分析ToolStripMenuItem.Text = "while语句分析";
+            this.while语句分析ToolStripMenuItem.Click += new System.EventHandler(this.WhileAnalyse);
+            // 
+            // doWhile语句分析ToolStripMenuItem
+            // 
+            this.doWhile语句分析ToolStripMenuItem.Name = "doWhile语句分析ToolStripMenuItem";
+            this.doWhile语句分析ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.doWhile语句分析ToolStripMenuItem.Text = "do while语句分析";
+            this.doWhile语句分析ToolStripMenuItem.Click += new System.EventHandler(this.DoWhileAnalyse);
             // 
             // Menu_SentenceAnalyse_SA
             // 
@@ -641,24 +662,6 @@
             this.toolStripProgressBar4.Name = "toolStripProgressBar4";
             this.toolStripProgressBar4.Size = new System.Drawing.Size(100, 18);
             this.toolStripProgressBar4.ToolTipText = "行号信息栏";
-            // 
-            // for语句分析ToolStripMenuItem
-            // 
-            this.for语句分析ToolStripMenuItem.Name = "for语句分析ToolStripMenuItem";
-            this.for语句分析ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.for语句分析ToolStripMenuItem.Text = "for语句分析";
-            // 
-            // while语句分析ToolStripMenuItem
-            // 
-            this.while语句分析ToolStripMenuItem.Name = "while语句分析ToolStripMenuItem";
-            this.while语句分析ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.while语句分析ToolStripMenuItem.Text = "while语句分析";
-            // 
-            // doWhile语句分析ToolStripMenuItem
-            // 
-            this.doWhile语句分析ToolStripMenuItem.Name = "doWhile语句分析ToolStripMenuItem";
-            this.doWhile语句分析ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.doWhile语句分析ToolStripMenuItem.Text = "do while语句分析";
             // 
             // Form1
             // 
