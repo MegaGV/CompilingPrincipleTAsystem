@@ -1,0 +1,6 @@
+if (true){
+  int a = 2;
+}
+else {
+  double b = 3;
+}

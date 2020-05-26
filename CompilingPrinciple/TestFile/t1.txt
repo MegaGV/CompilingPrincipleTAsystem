@@ -1,7 +1,0 @@
-program example;
-const k=2,c=3;
-var
-a:integer;
-begin
-
-end.

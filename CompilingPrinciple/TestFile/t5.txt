@@ -1,8 +1,0 @@
-program example;
-var
-     a,b,c:integer;
-	x:char;
-begin
-	while a>b do 
-	c:=5;
-end.

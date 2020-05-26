@@ -1,4 +1,0 @@
-S->T|SvT
-T->U|T^U
-U->i|-U
-M->#S#

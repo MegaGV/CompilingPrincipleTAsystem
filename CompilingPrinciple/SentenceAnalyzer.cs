@@ -155,9 +155,9 @@ namespace CompilingPrinciple
         {
             /*
                 E→TE’
-                E’→+TE’ | -TE’
+                E’→+TE’ | -TE’ | ε
                 T→FT’
-                T’→*FT’ | / FT’
+                T’→*FT’ | / FT’ | ε
                 F→(E) | i
             */
             E();
@@ -355,38 +355,85 @@ namespace CompilingPrinciple
                 NextToken();
                 if (token.getValue().Equals("("))
                 {
-                    argsInfo.Append("(\tdelimiter\n");
-                    List<Token> boolTokens = new List<Token>();
-                    while (true) 
+                    E();
+                    if (token.getValue().Equals("{"))
                     {
-                        NextToken();
-                        if (p == tokens.Count)
+                        C();
+                        if (p < tokens.Count) 
                         {
-                            Error("Wrong boolexpression found");
-                            break;
+                            if (token.getValue().Equals("else"))
+                            {
+                                argsInfo.Append("else\tkeyword\n");
+                                NextToken();
+                                if (token.getValue().Equals("{"))
+                                {
+                                    C();
+                                    if (p > tokens.Count)
+                                        Error("Over function body part");
+                                }
+                                else
+                                    Error("Wrong function body found");
+                            }
+                            else
+                                Error("No 'else' found at the second part");
                         }
-                        else if (token.getValue().Equals(")"))
-                        {
-                            boolExpressionAnalyzer = new BoolExpressionAnalyzer(boolTokens);
-                            boolExpressionAnalyzer.Analyse();
-                            argsInfo.Append(")\tdelimiter\n");
-                            break;
-                        }
-                        else
-                            boolTokens.Add(token);
                     }
+                    else
+                        Error("Wrong function body found");
                 }
                 else
-                {
                     Error("No boolexpression found");
-                }
             }
             else
+                Error("No 'if' found at the begining");
+        }
+
+        public void E()
+        {
+            argsInfo.Append("(\tdelimiter\n");
+            List<Token> boolTokens = new List<Token>();
+            while (true)
             {
-                Error("No 'if found' at the begining");
+                NextToken();
+                if (p == tokens.Count)
+                {
+                    Error("Wrong boolexpression found");
+                    break;
+                }
+                else if (token.getValue().Equals(")"))
+                {
+                    boolExpressionAnalyzer = new BoolExpressionAnalyzer(boolTokens);
+                    boolExpressionAnalyzer.Analyse();
+                    argsInfo.Append(")\tdelimiter\n");
+                    NextToken();
+                    break;
+                }
+                else
+                    boolTokens.Add(token);
             }
         }
 
+        public void C()
+        {
+            argsInfo.Append("{\tdelimeter\n");
+            while (true)
+            {
+                NextToken();
+                if (p == tokens.Count)
+                {
+                    Error("Wrong function body found");
+                    break;
+                }
+                else if (token.getValue().Equals("}"))
+                {
+                    argsInfo.Append("}\tdelimeter\n");
+                    NextToken();
+                    break;
+                }
+                else
+                    argsInfo.Append(token.getValue() + "\t" + token.getTokenTypeName() + "\n");
+            }
+        }
 
 
         public new string getWrongInfo()
